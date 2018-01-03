@@ -6,7 +6,7 @@ namespace ConcurrencyTest
     {
         static void Main(string[] args)
         {
-            for (var i = 1; i < 101; i++)
+            for (var i = 1; i < 1001; i++)
             {
                 Console.Write($"{i}: ");
                 new ConcurrencyTest().TestConcurrency();

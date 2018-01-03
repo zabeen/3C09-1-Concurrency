@@ -10,12 +10,13 @@ namespace ConcurrencyTest
             public int Value { get; set; }
         }
 
-        private DataStore store = new DataStore();
+        private DataStore store1 = new DataStore();
+        private DataStore store2 = new DataStore();
 
         public void TestConcurrency()
         {
-            var thread1 = new Thread(IncrementTheValue);
-            var thread2 = new Thread(IncrementTheValue);
+            var thread1 = new Thread(IncrementTheValue1);
+            var thread2 = new Thread(IncrementTheValue2);
 
             thread1.Start();
             thread2.Start();
@@ -23,14 +24,30 @@ namespace ConcurrencyTest
             thread1.Join();
             thread2.Join();
 
-            Console.WriteLine($"Final value: {store.Value}");
+            Console.WriteLine($"Final values: {store1.Value}, {store2.Value}");
         }
 
-        private void IncrementTheValue()
+        private void IncrementTheValue1()
         {
-            lock (store)
+            lock (store1)
             {
-                store.Value++;
+                lock (store2)
+                {
+                    store1.Value++;
+                    store2.Value++;
+                }
+            }
+        }
+
+        private void IncrementTheValue2()
+        {
+            lock (store2)
+            {
+                lock (store1)
+                {
+                    store1.Value++;
+                    store2.Value++;
+                }
             }
         }
     }
